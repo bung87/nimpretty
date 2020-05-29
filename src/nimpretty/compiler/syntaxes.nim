@@ -10,7 +10,7 @@
 ## Implements the dispatcher for the different parsers.
 
 import
-  strutils, ast, idents, lexer, options, msgs, parser,
+  strutils, ast, idents, lexer, options,  parser,
   filters, filter_tmpl, renderer, lineinfos, pathutils,streams
 
 type
@@ -60,8 +60,7 @@ proc containsShebang(s: string, i: int): bool =
     while j < s.len and s[j] in Whitespace: inc(j)
     result = s[j] == '/'
 
-proc parsePipe(filename: AbsoluteFile, inputStream: Stream; cache: IdentCache;
-               ): PNode =
+proc parsePipe(filename: AbsoluteFile, inputStream: Stream; cache: IdentCache): PNode =
   result = newNode(nkEmpty)
   var s = newFileStream(filename.string,fmWrite)
   if s != nil:
