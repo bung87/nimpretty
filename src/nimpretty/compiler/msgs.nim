@@ -8,7 +8,7 @@
 #
 
 import
-  strutils, os, tables, ropes, macros,
+  strutils, os, tables, ropes, macros,options,
   lineinfos, pathutils
 import std/private/miscdollars
 
@@ -63,8 +63,8 @@ proc newFileInfo(fullPath: AbsoluteFile, projPath: RelativeFile): TFileInfo =
         result.fullContent = ""
 
 # when defined(nimpretty):
-proc fileSection*(fid: FileIndex; a, b: int): string = ""
-  # substr(conf.m.fileInfos[fid.int].fullContent, a, b)
+proc fileSection*(conf: ConfigRef; fid: FileIndex; a, b: int): string =
+  substr(conf.m.fileInfos[fid.string].fullContent, a, b)
 
 # proc fileInfoKnown*(conf: ConfigRef; filename: AbsoluteFile): bool =
 #   var

@@ -240,9 +240,9 @@ type
     line*: uint16
     col*: int16
     fileIndex*: FileIndex
-    when defined(nimpretty):
-      offsetA*, offsetB*: int
-      commentOffsetA*, commentOffsetB*: int
+    # when defined(nimpretty):
+    offsetA*, offsetB*: int
+    commentOffsetA*, commentOffsetB*: int
 
   TErrorOutput* = enum
     eStdOut
