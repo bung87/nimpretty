@@ -8,8 +8,8 @@
 #
 
 import
-  os, strutils, strtabs, sets, lineinfos, platform,
-  prefixmatches, pathutils
+  os, strutils, strtabs, sets, ./lineinfos, platform,
+  prefixmatches, ./pathutils
 
 # from terminal import isatty
 from times import utc, fromUnix, local, getTime, format, DateTime

@@ -15,7 +15,7 @@ when defined(nimHasUsed):
   {.used.}
 
 import
-  lexer,lineinfos, options, idents, strutils, ast, msgs, lineinfos
+  ./lexer,./lineinfos, ./options, ./idents, strutils, ./ast, ./msgs, ./lineinfos
 
 type
   TRenderFlag* = enum
@@ -43,8 +43,8 @@ type
     inGenericParams: bool
     checkAnon: bool        # we're in a context that can contain sfAnon
     inPragma: int
-    when defined(nimpretty):
-      pendingNewlineCount: int
+    # when defined(nimpretty):
+    pendingNewlineCount: int
     fid*: FileIndex
     config*: ConfigRef
 
@@ -73,19 +73,19 @@ const
   IndentWidth = 2
   longIndentWid = IndentWidth * 2
 
-when defined(nimpretty):
-  proc minmaxLine(n: PNode): (int, int) =
-    case n.kind
-    of nkTripleStrLit:
-      result = (n.info.line.int, n.info.line.int + countLines(n.strVal))
-    of nkCommentStmt:
-      result = (n.info.line.int, n.info.line.int + countLines(n.comment))
-    else:
-      result = (n.info.line.int, n.info.line.int)
-    for i in 0..<n.safeLen:
-      let (currMin, currMax) = minmaxLine(n[i])
-      if currMin < result[0]: result[0] = currMin
-      if currMax > result[1]: result[1] = currMax
+# when defined(nimpretty):
+proc minmaxLine(n: PNode): (int, int) =
+  case n.kind
+  of nkTripleStrLit:
+    result = (n.info.line.int, n.info.line.int + countLines(n.strVal))
+  of nkCommentStmt:
+    result = (n.info.line.int, n.info.line.int + countLines(n.comment))
+  else:
+    result = (n.info.line.int, n.info.line.int)
+  for i in 0..<n.safeLen:
+    let (currMin, currMax) = minmaxLine(n[i])
+    if currMin < result[0]: result[0] = currMin
+    if currMax > result[1]: result[1] = currMax
 
   proc lineDiff(a, b: PNode): int =
     result = minmaxLine(b)[0] - minmaxLine(a)[1]

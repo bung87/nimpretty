@@ -9,8 +9,7 @@
 
 # abstract syntax tree + symbol table
 
-import
-  lineinfos, hashes, options, ropes, idents, idgen, int128
+import ./[lineinfos, hashes, options, ropes, idents, idgen, int128]
 from strutils import toLowerAscii
 
 export int128

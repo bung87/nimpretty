@@ -10,8 +10,8 @@
 # This module implements Nim's simple filters and helpers for filters.
 
 import
-   idents, strutils, ast, msgs, options,
-  renderer, pathutils,streams
+   ./idents, strutils, ./ast, ./msgs, ./options,
+  ./renderer, ./pathutils,streams
 
 proc invalidPragma(conf: ConfigRef; n: PNode) =
   discard

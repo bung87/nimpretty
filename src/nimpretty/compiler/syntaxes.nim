@@ -10,8 +10,8 @@
 ## Implements the dispatcher for the different parsers.
 
 import
-  strutils, ast, idents, lexer, options, msgs, parser,
-  filters, filter_tmpl, renderer, lineinfos, pathutils,streams
+  strutils, ./ast, ./idents, ./lexer, ./options, ./msgs, ./parser,
+  ./filters, ./filter_tmpl, ./renderer, ./lineinfos, ./pathutils,streams
 
 type
   TFilterKind* = enum

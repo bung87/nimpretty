@@ -16,8 +16,8 @@
 
 
 import
-  lexer, idents, strutils, ast, msgs, options, lineinfos,
-  pathutils,streams,syntaxes
+  ./lexer, ./idents, strutils, ./ast, ./msgs, ./options, ./lineinfos,
+  ./pathutils,streams,./syntaxes
 
 # when defined(nimpretty):
 import layouter
