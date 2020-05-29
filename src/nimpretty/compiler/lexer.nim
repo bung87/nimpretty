@@ -16,7 +16,7 @@
 # DOS or Macintosh text files, even when it is not the native format.
 
 import
-  hashes, ./options,./ msgs, strutils, platform, ./idents, ./lexbase,
+  hashes, ./options,./ msgs, strutils, ./platform, ./idents, ./lexbase,
   ./wordrecg, ./lineinfos, ./pathutils, parseutils,streams
 
 const

@@ -8,8 +8,8 @@
 #
 
 import
-  strutils, os, tables, ropes, macros,options,
-  lineinfos, pathutils
+  strutils, os, tables, ropes, macros,./options,
+  ./lineinfos,./ pathutils
 import std/private/miscdollars
 
 type InstantiationInfo = typeof(instantiationInfo())
