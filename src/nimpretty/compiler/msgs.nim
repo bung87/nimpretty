@@ -64,7 +64,7 @@ proc newFileInfo(fullPath: AbsoluteFile, projPath: RelativeFile): TFileInfo =
 
 # when defined(nimpretty):
 proc fileSection*(conf: ConfigRef; fid: FileIndex; a, b: int): string =
-  substr(conf.m.fileInfos[fid.string].fullContent, a, b)
+  substr(conf.m.fileInfos[fid.int].fullContent, a, b)
 
 # proc fileInfoKnown*(conf: ConfigRef; filename: AbsoluteFile): bool =
 #   var
@@ -75,33 +75,33 @@ proc fileSection*(conf: ConfigRef; fid: FileIndex; a, b: int): string =
 #     canon = filename
 #   result = conf.m.filenameToIndexTbl.hasKey(canon.string)
 
-# proc fileInfoIdx*(conf: ConfigRef; filename: AbsoluteFile; isKnownFile: var bool): FileIndex =
-#   var
-#     canon: AbsoluteFile
-#     pseudoPath = false
+proc fileInfoIdx*(conf: ConfigRef; filename: AbsoluteFile; isKnownFile: var bool): FileIndex =
+  var
+    canon: AbsoluteFile
+    pseudoPath = false
 
-#   try:
-#     canon = canonicalizePath(conf, filename)
-#     shallow(canon.string)
-#   except OSError:
-#     canon = filename
-#     # The compiler uses "filenames" such as `command line` or `stdin`
-#     # This flag indicates that we are working with such a path here
-#     pseudoPath = true
+  # try:
+  #   canon = canonicalizePath(conf, filename)
+  #   shallow(canon.string)
+  # except OSError:
+  #   canon = filename
+  #   # The compiler uses "filenames" such as `command line` or `stdin`
+  #   # This flag indicates that we are working with such a path here
+  #   pseudoPath = true
 
-#   if conf.m.filenameToIndexTbl.hasKey(canon.string):
-#     isKnownFile = true
-#     result = conf.m.filenameToIndexTbl[canon.string]
-#   else:
-#     isKnownFile = false
-#     result = conf.m.fileInfos.len.FileIndex
-#     conf.m.fileInfos.add(newFileInfo(canon, if pseudoPath: RelativeFile filename
-#                                             else: relativeTo(canon, conf.projectPath)))
-#     conf.m.filenameToIndexTbl[canon.string] = result
+  if conf.m.filenameToIndexTbl.hasKey(canon.string):
+    isKnownFile = true
+    result = conf.m.filenameToIndexTbl[canon.string]
+  else:
+    isKnownFile = false
+    result = conf.m.fileInfos.len.FileIndex
+    conf.m.fileInfos.add(newFileInfo(canon, if pseudoPath: RelativeFile filename
+                                            else: relativeTo(canon, conf.projectPath)))
+    conf.m.filenameToIndexTbl[canon.string] = result
 
-# proc fileInfoIdx*(conf: ConfigRef; filename: AbsoluteFile): FileIndex =
-#   var dummy: bool
-#   result = fileInfoIdx(conf, filename, dummy)
+proc fileInfoIdx*(conf: ConfigRef; filename: AbsoluteFile): FileIndex =
+  var dummy: bool
+  result = fileInfoIdx(conf, filename, dummy)
 
 proc newLineInfo*(fileInfoIdx: FileIndex, line, col: int): TLineInfo =
   result.fileIndex = fileInfoIdx
@@ -114,8 +114,8 @@ proc newLineInfo*(fileInfoIdx: FileIndex, line, col: int): TLineInfo =
   else:
     result.col = -1
 
-# proc newLineInfo*(conf: ConfigRef; filename: AbsoluteFile, line, col: int): TLineInfo {.inline.} =
-#   result = newLineInfo(fileInfoIdx(conf, filename), line, col)
+proc newLineInfo*(conf: ConfigRef; filename: AbsoluteFile, line, col: int): TLineInfo {.inline.} =
+  result = newLineInfo(fileInfoIdx(conf, filename), line, col)
 
 proc concat(strings: openArray[string]): string =
   var totalLen = 0
@@ -179,11 +179,11 @@ const
 #     (if fileIdx == commandLineIdx: commandLineDesc else: "???")
 #   else: conf.m.fileInfos[fileIdx.int32].projPath.string
 
-# proc toFullPath*(conf: ConfigRef; fileIdx: FileIndex): string =
-#   if fileIdx.int32 < 0 or conf == nil:
-#     result = (if fileIdx == commandLineIdx: commandLineDesc else: "???")
-#   else:
-#     result = conf.m.fileInfos[fileIdx.int32].fullPath.string
+proc toFullPath*(conf: ConfigRef; fileIdx: FileIndex): string =
+  if fileIdx.int32 < 0 or conf == nil:
+    result = (if fileIdx == commandLineIdx: commandLineDesc else: "???")
+  else:
+    result = conf.m.fileInfos[fileIdx.int32].fullPath.string
 
 # proc setDirtyFile*(conf: ConfigRef; fileIdx: FileIndex; filename: AbsoluteFile) =
 #   assert fileIdx.int32 >= 0
@@ -198,13 +198,13 @@ const
 #   assert fileIdx.int32 >= 0
 #   shallowCopy(result, conf.m.fileInfos[fileIdx.int32].hash)
 
-# proc toFullPathConsiderDirty*(conf: ConfigRef; fileIdx: FileIndex): AbsoluteFile =
-#   if fileIdx.int32 < 0:
-#     result = AbsoluteFile(if fileIdx == commandLineIdx: commandLineDesc else: "???")
-#   elif not conf.m.fileInfos[fileIdx.int32].dirtyFile.isEmpty:
-#     result = conf.m.fileInfos[fileIdx.int32].dirtyFile
-#   else:
-#     result = conf.m.fileInfos[fileIdx.int32].fullPath
+proc toFullPathConsiderDirty*(conf: ConfigRef; fileIdx: FileIndex): AbsoluteFile =
+  if fileIdx.int32 < 0:
+    result = AbsoluteFile(if fileIdx == commandLineIdx: commandLineDesc else: "???")
+  elif not conf.m.fileInfos[fileIdx.int32].dirtyFile.isEmpty:
+    result = conf.m.fileInfos[fileIdx.int32].dirtyFile
+  else:
+    result = conf.m.fileInfos[fileIdx.int32].fullPath
 
 # template toFilename*(conf: ConfigRef; info: TLineInfo): string =
 #   toFilename(conf, info.fileIndex)

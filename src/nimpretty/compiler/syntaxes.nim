@@ -10,7 +10,7 @@
 ## Implements the dispatcher for the different parsers.
 
 import
-  strutils, ast, idents, lexer, options,  parser,
+  strutils, ast, idents, lexer, options, msgs, parser,
   filters, filter_tmpl, renderer, lineinfos, pathutils,streams
 
 type
@@ -60,7 +60,7 @@ proc containsShebang(s: string, i: int): bool =
     while j < s.len and s[j] in Whitespace: inc(j)
     result = s[j] == '/'
 
-proc parsePipe(filename: AbsoluteFile, inputStream: Stream; cache: IdentCache): PNode =
+proc parsePipe(filename: AbsoluteFile, inputStream: Stream; cache: IdentCache;config: ConfigRef): PNode =
   result = newNode(nkEmpty)
   var s = newFileStream(filename.string,fmWrite)
   if s != nil:
@@ -80,7 +80,7 @@ proc parsePipe(filename: AbsoluteFile, inputStream: Stream; cache: IdentCache): 
         inc(i, 2)
         while i < line.len and line[i] in Whitespace: inc(i)
         var q: TParser
-        parser.openParser(q, filename, newStringStream(substr(line, i)), cache)
+        parser.openParser(q, filename, newStringStream(substr(line, i)), cache,config)
         result = parser.parseAll(q)
         parser.closeParser(q)
     close(s)
@@ -148,14 +148,14 @@ proc openParsers*(p: var TParsers, fileIdx: FileIndex, inputstream: Stream;
   assert config != nil
   var s: Stream
   p.skin = skinStandard
-  let filename = fileIdx.string #toFullPathConsiderDirty(config, fileIdx)
-  var pipe = parsePipe(filename.AbsoluteFile, inputstream, cache)
+  let filename = toFullPathConsiderDirty(config, fileIdx)
+  var pipe = parsePipe(filename, inputstream, cache,config)
   p.config() = config
-  if pipe != nil: s = evalPipe(p, pipe, filename.AbsoluteFile, inputstream)
+  if pipe != nil: s = evalPipe(p, pipe, filename, inputstream)
   else: s = inputstream
   case p.skin
   of skinStandard, skinEndX:
-    parser.openParser(p.parser, filename.AbsoluteFile, s, cache)
+    parser.openParser(p.parser, fileIdx, s, cache,config)
 
 proc closeParsers*(p: var TParsers) =
   parser.closeParser(p.parser)
@@ -163,7 +163,7 @@ proc closeParsers*(p: var TParsers) =
 proc setupParsers*(p: var TParsers; fileIdx: FileIndex; cache: IdentCache;
                    config: ConfigRef): bool =
   var f: File
-  let filename = fileIdx.string #toFullPathConsiderDirty(config, fileIdx)
+  let filename = toFullPathConsiderDirty(config, fileIdx)
   if not open(f, filename.string):
     # rawMessage(config, errGenerated, "cannot open file: " & filename.string)
     return false

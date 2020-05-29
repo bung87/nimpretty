@@ -1556,7 +1556,7 @@ proc `$`*(n: PNode): string = n.renderTree
 
 proc renderModule*(n: PNode, infile, outfile: string,
                    renderFlags: TRenderFlags = {};
-                   fid = FileIndex("-1");
+                   fid = FileIndex(-1);
                    conf: ConfigRef = nil) =
   var
     f: File

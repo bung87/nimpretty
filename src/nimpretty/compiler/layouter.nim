@@ -9,7 +9,7 @@
 
 ## Layouter for nimpretty.
 
-import idents, lexer, lineinfos,  msgs, strutils, pathutils,streams
+import idents, lexer, lineinfos, options, msgs, strutils, pathutils,streams
 
 const
   MinLineLen = 15
@@ -33,7 +33,7 @@ type
     ltBeginSection, ltEndSection
 
   Emitter* = object
-    # config: ConfigRef
+    config: ConfigRef
     fid: FileIndex
     lastTok: TTokType
     inquote, lastTokWasTerse: bool
@@ -49,11 +49,11 @@ type
     maxLineLen*: int
 
 proc openEmitter*(em: var Emitter, cache: IdentCache;
-                   fileIdx: FileIndex) =
-  let fullPath = AbsoluteFile fileIdx.string
+                   config: ConfigRef, fileIdx: FileIndex) =
+  let fullPath = AbsoluteFile config.toFullPath(fileIdx)
   if em.indWidth == 0:
     em.indWidth = getIndentWidth(fileIdx, newFileStream(fullPath.string, fmRead),
-                                cache)
+                                cache,config)
     if em.indWidth == 0: em.indWidth = 2
   # em.config = config
   em.fid = fileIdx
@@ -405,7 +405,7 @@ proc endsInAlpha(em: Emitter): bool =
 
 proc emitComment(em: var Emitter; tok: TToken; dontIndent: bool) =
   var col = em.col
-  let lit = strip fileSection( em.fid, tok.commentOffsetA, tok.commentOffsetB)
+  let lit = strip fileSection( em.config,em.fid, tok.commentOffsetA, tok.commentOffsetB)
   em.lineSpan = countNewlines(lit)
   if em.lineSpan > 0: calcCol(em, lit)
   if em.lineSpan == 0:
@@ -548,7 +548,7 @@ proc emitTok*(em: var Emitter; L: TLexer; tok: TToken) =
     if not preventComment:
       emitComment(em, tok, dontIndent = false)
   of tkIntLit..tkStrLit, tkRStrLit, tkTripleStrLit, tkGStrLit, tkGTripleStrLit, tkCharLit:
-    let lit = fileSection( em.fid, tok.offsetA, tok.offsetB)
+    let lit = fileSection(em.config, em.fid, tok.offsetA, tok.offsetB)
     if endsInAlpha(em) and tok.tokType notin {tkGStrLit, tkGTripleStrLit}: wrSpace(em)
     em.lineSpan = countNewlines(lit)
     if em.lineSpan > 0: calcCol(em, lit)

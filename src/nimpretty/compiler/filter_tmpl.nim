@@ -206,7 +206,7 @@ proc filterTmpl*(stdin: Stream, filename: AbsoluteFile,
                  call: PNode; conf: ConfigRef): Stream =
   var p: TTmplParser
   p.config = conf
-  p.info = newLineInfo( filename.FileIndex, 0, 0)
+  p.info = newLineInfo(conf, filename, 0, 0)
   p.outp = newStringStream("")
   p.inp = stdin
   p.subsChar = charArg(conf, call, "subschar", 1, '$')

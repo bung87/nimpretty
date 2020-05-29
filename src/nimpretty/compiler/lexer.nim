@@ -219,9 +219,9 @@ proc initToken*(L: var TToken) =
   L.fNumber = 0.0
   L.base = base10
   L.ident = nil
-  when defined(nimpretty):
-    L.commentOffsetA = 0
-    L.commentOffsetB = 0
+  # when defined(nimpretty):
+  L.commentOffsetA = 0
+  L.commentOffsetB = 0
 
 proc fillToken(L: var TToken) =
   L.tokType = tkInvalid
@@ -236,21 +236,21 @@ proc fillToken(L: var TToken) =
     L.commentOffsetA = 0
     L.commentOffsetB = 0
 
-proc openLexer*(lex: var TLexer, fileIdx: AbsoluteFile, inputstream: Stream;
-                 cache: IdentCache;) =
+proc openLexer*(lex: var TLexer, fileIdx: FileIndex, inputstream: Stream;
+                 cache: IdentCache;config: ConfigRef) =
   open(lex, inputstream)
-  lex.fileIdx = fileIdx.FileIndex
+  lex.fileIdx = fileIdx
   lex.indentAhead = -1
   lex.currLineIndent = 0
   inc(lex.lineNumber)#, inputstream.lineOffset)
   lex.cache = cache
-  when defined(nimsuggest):
-    lex.previousToken.fileIndex = fileIdx
-  # lex.config = config
+  # when defined(nimsuggest):
+  #   lex.previousToken.fileIndex = fileIdx
+  lex.config = config
 
-# proc openLexer*(lex: var TLexer, filename: AbsoluteFile, inputstream: Stream;
-#                 cache: IdentCache; config: ConfigRef) =
-#   openLexer(lex, fileInfoIdx(config, filename), inputstream, cache, config)
+proc openLexer*(lex: var TLexer, filename: AbsoluteFile, inputstream: Stream;
+                cache: IdentCache; config: ConfigRef) =
+  openLexer(lex, fileInfoIdx(config, filename), inputstream, cache, config)
 
 proc closeLexer*(lex: var TLexer) =
   if lex.config != nil:
@@ -1322,11 +1322,11 @@ proc rawGetTok*(L: var TLexer, tok: var TToken) =
   atTokenEnd()
 
 proc getIndentWidth*(fileIdx: FileIndex, inputstream: Stream;
-                     cache: IdentCache): int =
+                     cache: IdentCache;config: ConfigRef): int =
   var lex: TLexer
   var tok: TToken
   initToken(tok)
-  openLexer(lex, fileIdx.AbsoluteFile, inputstream, cache)
+  openLexer(lex, fileIdx, inputstream, cache,config)
   var prevToken = tkEof
   while tok.tokType != tkEof:
     rawGetTok(lex, tok)

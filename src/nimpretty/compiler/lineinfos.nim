@@ -1,19 +1,17 @@
-#
-#
-#           The Nim Compiler
-#        (c) Copyright 2018 Andreas Rumpf
-#
-#    See the file "copying.txt", included in this
-#    distribution, for details about the copyright.
-#
-
-## This module contains the ``TMsgKind`` enum as well as the
-## ``TLineInfo`` object.
-
 import ropes, tables, pathutils
 
 const
-  explanationsBaseUrl* = "https://nim-lang.org/docs"
+  explanationsBaseUrl* = "https://nim-lang.github.io/Nim"
+    # was: "https://nim-lang.org/docs" but we're now usually showing devel docs
+    # instead of latest release docs.
+
+proc createDocLink*(urlSuffix: string): string =
+  # os.`/` is not appropriate for urls.
+  result = explanationsBaseUrl
+  if urlSuffix.len > 0 and urlSuffix[0] == '/':
+    result.add urlSuffix
+  else:
+    result.add "/" & urlSuffix
 
 type
   TMsgKind* = enum
@@ -228,9 +226,8 @@ type
                                # for 'nimsuggest'
     hash*: string              # the checksum of the file
     dirty*: bool               # for 'nimfix' / 'nimpretty' like tooling
-    when defined(nimpretty):
-      fullContent*: string
-  FileIndex* = distinct string
+    fullContent*: string
+  FileIndex* = distinct int32
   TLineInfo* = object          # This is designed to be as small as possible,
                                # because it is used
                                # in syntax nodes. We save space here by using
@@ -259,7 +256,7 @@ proc raiseRecoverableError*(msg: string) {.noinline.} =
   raise newException(ERecoverableError, msg)
 
 const
-  InvalidFileIdx* = FileIndex("-1")
+  InvalidFileIdx* = FileIndex(-1)
   unknownLineInfo* = TLineInfo(line: 0, col: -1, fileIndex: InvalidFileIdx)
 
 type
@@ -267,9 +264,9 @@ type
     Hint, Warning, Error
 
 const
-  trackPosInvalidFileIdx* = FileIndex("-2") # special marker so that no suggestions
+  trackPosInvalidFileIdx* = FileIndex(-2) # special marker so that no suggestions
                                           # are produced within comments and string literals
-  commandLineIdx* = FileIndex("-3")
+  commandLineIdx* = FileIndex(-3)
 
 type
   MsgConfig* = object ## does not need to be stored in the incremental cache

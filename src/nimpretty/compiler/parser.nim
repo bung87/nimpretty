@@ -17,7 +17,7 @@
 
 import
   lexer, idents, strutils, ast, msgs, options, lineinfos,
-  pathutils,streams
+  pathutils,streams,syntaxes
 
 # when defined(nimpretty):
 import layouter
@@ -96,21 +96,21 @@ proc getTok(p: var TParser) =
       rawGetTok(p.lex, p.tok)
       emitTok(p.em, p.lex, p.tok)
 
-proc openParser*(p: var TParser, fileIdx: AbsoluteFile, inputStream: Stream,
-                 cache: IdentCache) =
+proc openParser*(p: var TParser, fileIdx: FileIndex, inputStream: Stream,
+                 cache: IdentCache;config: ConfigRef) =
   ## Open a parser, using the given arguments to set up its internal state.
   ##
   initToken(p.tok)
-  openLexer(p.lex, fileIdx, inputStream, cache)
+  openLexer(p.lex, fileIdx, inputStream, cache,config)
   when defined(nimpretty):
     openEmitter(p.em, cache, config, fileIdx)
   getTok(p)                   # read the first token
   p.firstTok = true
   p.emptyNode = newNode(nkEmpty)
 
-# proc openParser*(p: var TParser, filename: AbsoluteFile, inputStream: Stream,
-#                  cache: IdentCache; config: ConfigRef) =
-#   openParser(p, fileInfoIdx(config, filename), inputStream, cache, config)
+proc openParser*(p: var TParser, filename: AbsoluteFile, inputStream: Stream,
+                 cache: IdentCache; config: ConfigRef) =
+  openParser(p, fileInfoIdx(config, filename), inputStream, cache, config)
 
 proc closeParser(p: var TParser) =
   ## Close a parser, freeing up its resources.
@@ -2350,7 +2350,7 @@ proc parseString*(s: string; cache: IdentCache; config: ConfigRef;
 
   var parser: TParser
   parser.lex.errorHandler = errorHandler
-  openParser(parser, AbsoluteFile filename, stream, cache)
+  openParser(parser, AbsoluteFile filename, stream, cache,config)
 
   result = parser.parseAll
   closeParser(parser)

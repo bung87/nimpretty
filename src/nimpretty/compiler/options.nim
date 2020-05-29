@@ -415,7 +415,7 @@ proc newConfigRef*(): ConfigRef =
     projectPath: AbsoluteDir"", # holds a path like /home/alice/projects/nim/compiler/
     projectFull: AbsoluteFile"", # projectPath/projectName
     projectIsStdin: false, # whether we're compiling from stdin
-    projectMainIdx: FileIndex("0'i32"), # the canonical path id of the main module
+    projectMainIdx: FileIndex(0'i32), # the canonical path id of the main module
     command: "", # the main command (e.g. cc, check, scan, etc)
     commandArgs: @[], # any arguments after the main command
     commandLine: "",
