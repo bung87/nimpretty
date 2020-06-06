@@ -87,8 +87,8 @@ proc minmaxLine(n: PNode): (int, int) =
     if currMin < result[0]: result[0] = currMin
     if currMax > result[1]: result[1] = currMax
 
-  proc lineDiff(a, b: PNode): int =
-    result = minmaxLine(b)[0] - minmaxLine(a)[1]
+proc lineDiff(a, b: PNode): int =
+  result = minmaxLine(b)[0] - minmaxLine(a)[1]
 
 const
   MaxLineLen = 80
