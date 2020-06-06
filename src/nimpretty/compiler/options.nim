@@ -9,7 +9,7 @@
 
 import
   os, strutils, strtabs, sets, ./lineinfos, ./platform,
-  prefixmatches, ./pathutils
+  prefixmatches, ./mypathutils
 
 # from terminal import isatty
 from times import utc, fromUnix, local, getTime, format, DateTime

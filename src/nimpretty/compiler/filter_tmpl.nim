@@ -11,8 +11,9 @@
 
 import
   streams, strutils, ./ast, ./msgs, ./options,
-  ./filters, ./lineinfos, ./pathutils
-
+  ./filters, ./lineinfos, ./mypathutils
+proc write(s: Stream, x: char) = 
+  s.write $x
 type
   TParseState = enum
     psDirective, psTempl

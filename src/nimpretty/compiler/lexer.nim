@@ -17,7 +17,7 @@
 
 import
   hashes, ./options,./ msgs, strutils, ./platform, ./idents, ./lexbase,
-  ./wordrecg, ./lineinfos, ./pathutils, parseutils,streams
+  ./wordrecg, ./lineinfos, ./mypathutils, parseutils,streams
 
 const
   Lrz* = ' '

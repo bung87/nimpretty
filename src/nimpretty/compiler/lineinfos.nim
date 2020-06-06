@@ -1,4 +1,4 @@
-import ropes, tables, ./pathutils
+import ropes, tables, ./mypathutils
 
 const
   explanationsBaseUrl* = "https://nim-lang.github.io/Nim"

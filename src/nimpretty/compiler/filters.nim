@@ -11,7 +11,7 @@
 
 import
    ./idents, strutils, ./ast, ./msgs, ./options,
-  ./renderer, ./pathutils,streams
+  ./renderer, ./mypathutils,streams
 
 proc invalidPragma(conf: ConfigRef; n: PNode) =
   discard

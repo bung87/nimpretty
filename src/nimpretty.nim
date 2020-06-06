@@ -1,5 +1,5 @@
-import ./nimpretty/compiler / [idents,lineinfos, msgs, syntaxes, options, pathutils, layouter]
-import   os
+import ./nimpretty/compiler / [idents,lineinfos, msgs, syntaxes, options, ./mypathutils, layouter]
+import os
 
 type
   PrettyOptions = object
@@ -18,3 +18,7 @@ proc prettyPrint(infile, outfile: string, opt: PrettyOptions){.exportc.} =
     p.parser.em.maxLineLen = opt.maxLineLen
   discard parseAll(p)
   closeParsers(p)
+
+when isMainModule:
+  var opt = PrettyOptions(maxLineLen:120)
+  prettyPrint("./nimpretty.nim","./nimpretty.js",opt)

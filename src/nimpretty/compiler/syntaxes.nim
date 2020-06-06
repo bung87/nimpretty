@@ -11,7 +11,7 @@
 
 import
   strutils, ./ast, ./idents, ./lexer, ./options, ./msgs, ./parser,
-  ./filters, ./filter_tmpl, ./renderer, ./lineinfos, ./pathutils,streams
+  ./filters, ./filter_tmpl, ./renderer, ./lineinfos, ./mypathutils,streams
 
 type
   TFilterKind* = enum

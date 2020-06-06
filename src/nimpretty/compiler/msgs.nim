@@ -9,7 +9,7 @@
 
 import
   strutils, os, tables, ropes, macros,./options,
-  ./lineinfos,./ pathutils
+  ./lineinfos,./mypathutils
 import std/private/miscdollars
 
 type InstantiationInfo = typeof(instantiationInfo())

@@ -111,7 +111,7 @@ proc newIdentCache*(): IdentCache =
   result.emptyIdent = result.getIdent("")
   # initialize the keywords:
   for s in succ(low(specialWords))..high(specialWords):
-    result.getIdent(specialWords[s], hashIgnoreStyle(specialWords[s])).id = ord(s)
+    result.getIdent(specialWords[s], hashIgnoreStyle(specialWords[s])).id = ord(s.int)
 
 proc whichKeyword*(id: PIdent): TSpecialWord =
   if id.id < 0: result = wInvalid
